@@ -26,12 +26,12 @@ namespace Employee_time_tracking_software
         //option for local testing without internet connection.
         private const bool Test = true;
 
-        private const int TimeIntervalScreenShot_Minuts = 3; 
+        private const int TimeIntervalScreenShot_Minuts = 3;
 
         private DateTime dt = new DateTime();
         private DateTime dt_day = new DateTime();
         private DateTime dynamic_time = new DateTime();
-        private DateTime dynamic_time_day = new DateTime();   
+        private DateTime dynamic_time_day = new DateTime();
 
         private DispatcherTimer timer = new DispatcherTimer();
         private DispatcherTimer timer_shot = new DispatcherTimer();
@@ -102,7 +102,7 @@ namespace Employee_time_tracking_software
             }
 
             if (Test)
-            { 
+            {
                 SQLiteConnection connection = new SQLiteConnection(string.Format("Data Source={0};", databaseName2));
                 SQLiteCommand command3 = new SQLiteCommand("SELECT * FROM times WHERE id_worker=1;", connection); //WHERE 'id_worker'=1  ORDER BY id DESC LIMIT 1
                 connection.Open();
@@ -114,7 +114,7 @@ namespace Employee_time_tracking_software
                 foreach (DbDataRecord record in reader)
                 {
                     time_ticks = record["time_ticks"].ToString();
-                    time_ticks_day = record["time_ticks_day"].ToString(); 
+                    time_ticks_day = record["time_ticks_day"].ToString();
                 }
                 connection.Close();
 
@@ -159,7 +159,7 @@ namespace Employee_time_tracking_software
             HideElements(ls2);
 
             label_info.Content = "Employee time tracking software is running!";
-        } 
+        }
 
         private void TakeScreenShot()
         {
@@ -443,7 +443,7 @@ namespace Employee_time_tracking_software
                 HideElements(ls1);
                 ShowElements(ls2);
                 label_info.Content = "You have successfully entered!";
-                label_info.Foreground = System.Windows.Media.Brushes.Black; 
+                label_info.Foreground = System.Windows.Media.Brushes.Black;
 
                 textBlock_b1.Text = GetMonthTime("0:0:0");
                 textBlock_b2.Text = GetDayTime("0:0:0");
@@ -480,13 +480,13 @@ namespace Employee_time_tracking_software
                 label_info.Content = "You have successfully entered!";
                 label_info.Foreground = System.Windows.Media.Brushes.Black;
             }
-        } 
+        }
 
         private string GetDayTime(string s)
         {
             if (dynamic_time_day.Day != DateTime.Now.Day)
-            { 
-                dt_day = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0); 
+            {
+                dt_day = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             }
 
             dynamic_time_day = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dt_day.Day, dt_day.Hour, dt_day.Minute, dt_day.Second).AddHours(int.Parse(s.Split(new char[] { ':' })[0])).AddMinutes(int.Parse(s.Split(new char[] { ':' })[1])).AddSeconds(int.Parse(s.Split(new char[] { ':' })[2]));
@@ -618,11 +618,11 @@ namespace Employee_time_tracking_software
 
                 if (DateTime.Now.Hour == 23 & DateTime.Now.Minute == 59 && DateTime.Now.Second == 59 && DateTime.Now.Millisecond >= 400)
                 {
-                    stopWatch.Reset(); 
+                    stopWatch.Reset();
                 }
                 else if (ts.Hours > DateTime.Now.Hour)
                 {
-                    stopWatch.Reset(); 
+                    stopWatch.Reset();
                 }
 
                 string elapsedTime = string.Format("{0}:{1}:{2}", AddZero(ts.Hours), AddZero(ts.Minutes), AddZero((ts.Seconds)));
@@ -630,7 +630,7 @@ namespace Employee_time_tracking_software
                 label_timer_now.Content = elapsedTime;
 
                 textBlock_b1.Text = GetMonthTime(elapsedTime);
-                textBlock_b2.Text = GetDayTime(elapsedTime); 
+                textBlock_b2.Text = GetDayTime(elapsedTime);
 
                 if (temp == 0)
                 {
