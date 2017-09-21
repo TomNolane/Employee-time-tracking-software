@@ -23,7 +23,7 @@ namespace Employee_time_tracking_software
 {
     public partial class MainWindow : Window
     {
-        //option for local testing without internet connection
+        //option for local testing without internet connection.
         private const bool Test = true;
 
         private const int TimeIntervalScreenShot_Minuts = 3; 
