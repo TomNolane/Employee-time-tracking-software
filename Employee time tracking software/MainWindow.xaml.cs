@@ -88,7 +88,7 @@ namespace Employee_time_tracking_software
                     [time_ticks] char(50) NOT NULL,
                     [time_ticks_day] char(50) NOT NULL
                     );", connection); //DEFAULT '0'
-                connection.Open();
+                connection.Open(); 
                 command.ExecuteNonQuery();
                 connection.Close();
 
