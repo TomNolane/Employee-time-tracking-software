@@ -453,9 +453,7 @@ namespace Employee_time_tracking_software
 
                 textBlock_b1.Text = GetMonthTime("0:0:0");
                 textBlock_b2.Text = GetDayTime("0:0:0");
-                TakeScreenShot(true,"start");
-                label.Visibility = Visibility.Visible;
-                int y = 0;
+                TakeScreenShot(true,"start"); 
                 return;
             }
 
@@ -762,8 +760,7 @@ namespace Employee_time_tracking_software
         private void AddScreenshotsToRichTextBox()
         {
             //string path = Environment.CurrentDirectory + @"\ScreenShot_" + DateTime.Now.ToShortDateString();
-            Task.Run(() => 
-            { 
+              
                 List<string> ls_shots = new List<string>();
                 var directories = Directory.GetDirectories(Environment.CurrentDirectory);
                 foreach(var directory in directories)
@@ -780,21 +777,17 @@ namespace Employee_time_tracking_software
 
                 foreach(var temp in ls_shots)
                 {
-                    BitmapImage bitmap_img = new BitmapImage(new Uri(temp, UriKind.Absolute));
-                    bitmap_img.DecodePixelWidth = 200;
-                    bitmap_img.DecodePixelHeight = 200;
+                    BitmapImage bitmap_img = new BitmapImage(new Uri(temp, UriKind.Absolute)); 
                     System.Windows.Controls.Image img = new System.Windows.Controls.Image();
-                    img.Source = bitmap_img;
-                    img.Width = 200;
-                    img.Height = 200;
-                    ObjParag.Inlines.Add(img);  
+                    img.Source = bitmap_img; 
+                    ObjParag.Inlines.Add(img);
+                    ObjParag.Inlines.Add("\n\n");
                 }
                 ObjFdoc.Blocks.Add(ObjParag);
                 richTextBox.Dispatcher.Invoke(() =>
                 {
                     richTextBox.Document = ObjFdoc;
-                });
-            });
+                }); 
         }
     }
 
