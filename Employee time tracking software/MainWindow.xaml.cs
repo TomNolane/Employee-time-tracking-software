@@ -161,7 +161,7 @@ namespace Employee_time_tracking_software
             label_info.Content = "Employee time tracking software is running!";
         }
 
-        private void TakeScreenShot()
+        private void TakeScreenShot(bool b = false, string s = "")
         {
             //System.Drawing.Size sz = Screen.PrimaryScreen.Bounds.Size;
             //IntPtr hDesk = GetDesktopWindow();
@@ -199,7 +199,10 @@ namespace Employee_time_tracking_software
                         g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
                     }
 
-                    string filename = "ScreenCapture-" + DateTime.Now.ToString("ddMMyyyy-HHmmss") + ".png";
+                    string filename = string.Empty;
+
+                    if(b) filename = "ScreenCapture-" + DateTime.Now.ToString("ddMMyyyy_HH_mm_ss") + "_" + s + ".png";
+                    else filename = "ScreenCapture-" + DateTime.Now.ToString("ddMMyyyy_HH_mm_ss") + ".png";
 
                     bmp.Save(Path.Combine(path, filename), ImageFormat.Jpeg);
                 }
@@ -447,7 +450,7 @@ namespace Employee_time_tracking_software
 
                 textBlock_b1.Text = GetMonthTime("0:0:0");
                 textBlock_b2.Text = GetDayTime("0:0:0");
-
+                TakeScreenShot(true,"start");
                 return;
             }
 
