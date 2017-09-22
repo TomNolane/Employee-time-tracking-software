@@ -484,14 +484,14 @@ namespace Employee_time_tracking_software
 
         private string GetDayTime(string s)
         {
-            if (dynamic_time_day.Day != DateTime.Now.Day)
+            if (dt_day.Day != DateTime.Now.Day)
             {
                 dt_day = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0);
             }
 
             dynamic_time_day = new DateTime(DateTime.Now.Year, DateTime.Now.Month, dt_day.Day, dt_day.Hour, dt_day.Minute, dt_day.Second).AddHours(int.Parse(s.Split(new char[] { ':' })[0])).AddMinutes(int.Parse(s.Split(new char[] { ':' })[1])).AddSeconds(int.Parse(s.Split(new char[] { ':' })[2]));
 
-            return AddZero(dynamic_time.Hour) + ":" + AddZero(dynamic_time.Minute) + ":" + AddZero(dynamic_time.Second);
+            return AddZero(dynamic_time.Hour) + ":" + AddZero(dynamic_time_day.Minute) + ":" + AddZero(dynamic_time_day.Second);
         }
 
         private string GetMonthTime(string s)
