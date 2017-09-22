@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Windows.Documents;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -18,6 +19,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using System.Data.Common;
+using System.Windows.Media.Imaging;
 
 namespace Employee_time_tracking_software
 {
@@ -36,6 +38,9 @@ namespace Employee_time_tracking_software
         private DispatcherTimer timer = new DispatcherTimer();
         private DispatcherTimer timer_shot = new DispatcherTimer();
         private Stopwatch stopWatch = new Stopwatch();
+
+        private FlowDocument ObjFdoc = new FlowDocument();
+        private Paragraph ObjParag = new Paragraph();
 
         private string databaseName = Environment.CurrentDirectory + @"\worker.db";
         private string databaseName2 = Environment.CurrentDirectory + @"\timer.db";
@@ -156,8 +161,7 @@ namespace Employee_time_tracking_software
             ls2.Add(textBlock_b2);
 
             ShowElements(ls1);
-            HideElements(ls2);
-
+            richTextBox.Visibility = Visibility.Hidden; // delete
             AddLabelText("Employee time tracking software is running!"); 
         }
 
@@ -450,6 +454,8 @@ namespace Employee_time_tracking_software
                 textBlock_b1.Text = GetMonthTime("0:0:0");
                 textBlock_b2.Text = GetDayTime("0:0:0");
                 TakeScreenShot(true,"start");
+                label.Visibility = Visibility.Visible;
+                int y = 0;
                 return;
             }
 
@@ -721,6 +727,74 @@ namespace Employee_time_tracking_software
             AddLabelText("Employee time tracking on pause"); 
             button_start.Visibility = Visibility.Visible;
             button_stop.Visibility = Visibility.Hidden;
+        }
+
+        private void label_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (richTextBox.Visibility != Visibility.Visible)
+            {
+                AddLabelText("Show list of your screenshots");
+                HideElements(ls2);
+                richTextBox.Visibility = Visibility.Visible;
+                AddScreenshotsToRichTextBox();
+            }
+            else
+            {
+                AddLabelText("Show employee time tracking software");
+                ShowElements(ls2);
+                richTextBox.Visibility = Visibility.Hidden;
+                richTextBox.Document.Blocks.Clear();
+            } 
+        }
+
+        private void label_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            label.Foreground = System.Windows.Media.Brushes.DarkBlue;
+            label.Background = System.Windows.Media.Brushes.Yellow;
+        }
+
+        private void label_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            label.Foreground = System.Windows.Media.Brushes.Black;
+            label.Background = System.Windows.Media.Brushes.Transparent;
+        }
+
+        private void AddScreenshotsToRichTextBox()
+        {
+            //string path = Environment.CurrentDirectory + @"\ScreenShot_" + DateTime.Now.ToShortDateString();
+            Task.Run(() => 
+            { 
+                List<string> ls_shots = new List<string>();
+                var directories = Directory.GetDirectories(Environment.CurrentDirectory);
+                foreach(var directory in directories)
+                {
+                    if(directory.Contains("ScreenShot_"))
+                    {
+                        var files = Directory.GetFiles(directory);
+                        foreach(var file in files)
+                        {
+                            ls_shots.Add(file);
+                        }
+                    }
+                }
+
+                foreach(var temp in ls_shots)
+                {
+                    BitmapImage bitmap_img = new BitmapImage(new Uri(temp, UriKind.Absolute));
+                    bitmap_img.DecodePixelWidth = 200;
+                    bitmap_img.DecodePixelHeight = 200;
+                    System.Windows.Controls.Image img = new System.Windows.Controls.Image();
+                    img.Source = bitmap_img;
+                    img.Width = 200;
+                    img.Height = 200;
+                    ObjParag.Inlines.Add(img);  
+                }
+                ObjFdoc.Blocks.Add(ObjParag);
+                richTextBox.Dispatcher.Invoke(() =>
+                {
+                    richTextBox.Document = ObjFdoc;
+                });
+            });
         }
     }
 
