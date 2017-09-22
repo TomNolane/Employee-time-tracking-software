@@ -158,7 +158,7 @@ namespace Employee_time_tracking_software
             ShowElements(ls1);
             HideElements(ls2);
 
-            label_info.Content = "Employee time tracking software is running!";
+            AddLabelText("Employee time tracking software is running!"); 
         }
 
         private void TakeScreenShot(bool b = false, string s = "")
@@ -437,16 +437,15 @@ namespace Employee_time_tracking_software
         {
             if (string.IsNullOrWhiteSpace(textBox_username.Text) || textBox_username.Text.ToLower().Contains("username") || string.IsNullOrWhiteSpace(textBox_password.Password))
             {
-                label_info.Foreground = System.Windows.Media.Brushes.Red;
-                label_info.Content = string.IsNullOrWhiteSpace(textBox_username.Text) || textBox_username.Text.ToLower().Contains("username") ? "Username must be not empty!" : string.IsNullOrWhiteSpace(textBox_password.Password) ? "Password must be not empty!" : "";
+                AddLabelErrorText(string.IsNullOrWhiteSpace(textBox_username.Text) || textBox_username.Text.ToLower().Contains("username") ? "Username must be not empty!" : string.IsNullOrWhiteSpace(textBox_password.Password) ? "Password must be not empty!" : ""); 
                 return;
             }
             else if (Test)
             {
                 HideElements(ls1);
                 ShowElements(ls2);
-                label_info.Content = "You have successfully entered!";
-                label_info.Foreground = System.Windows.Media.Brushes.Black;
+
+                AddLabelText("You have successfully entered!"); 
 
                 textBlock_b1.Text = GetMonthTime("0:0:0");
                 textBlock_b2.Text = GetDayTime("0:0:0");
@@ -455,8 +454,8 @@ namespace Employee_time_tracking_software
             }
 
             HideElements(ls1);
-            label_info.Content = "Connecting ... please wait...";
-            label_info.Foreground = System.Windows.Media.Brushes.Black;
+
+            AddLabelText("Connecting ... please wait..."); 
 
             string url = "https://example.com";
 
@@ -474,14 +473,12 @@ namespace Employee_time_tracking_software
             if (string.IsNullOrWhiteSpace(result))
             {
                 ShowElements(ls1);
-                label_info.Content = "Incorrect login or password!";
-                label_info.Foreground = System.Windows.Media.Brushes.Red;
+                AddLabelErrorText("Incorrect login or password!"); 
             }
             else
             {
                 ShowElements(ls2);
-                label_info.Content = "You have successfully entered!";
-                label_info.Foreground = System.Windows.Media.Brushes.Black;
+                AddLabelText("Connecting ... please wait..."); 
             }
         }
 
@@ -567,8 +564,7 @@ namespace Employee_time_tracking_software
         {
             if (string.IsNullOrWhiteSpace(textBox_username.Text.ToString()))
             {
-                label_info.Content = "First, enter your username or email";
-                label_info.Foreground = System.Windows.Media.Brushes.Red;
+                AddLabelErrorText("First, enter your username or email");
                 return;
             }
 
@@ -583,16 +579,24 @@ namespace Employee_time_tracking_software
                 result = await POST(url, "", nvc);
             });
 
-            if (string.IsNullOrWhiteSpace(result))
-            {
-                label_info.Content = "First, enter your username or email";
-                label_info.Foreground = System.Windows.Media.Brushes.Red;
-            }
-            else
-            {
-                label_info.Content = "Mail has been send to you email for restore";
+            if (string.IsNullOrWhiteSpace(result)) AddLabelErrorText("First, enter your username or email");
+            else  AddLabelText("Mail has been send to you email for restore");
+        }
+
+        private void AddLabelText(string s)
+        {
+            label_info.Dispatcher.Invoke(() => { 
+                label_info.Content = s;
                 label_info.Foreground = System.Windows.Media.Brushes.Black;
-            }
+            });
+        }
+
+        private void AddLabelErrorText(string s)
+        {
+            label_info.Dispatcher.Invoke(() => {
+                label_info.Content = s;
+                label_info.Foreground = System.Windows.Media.Brushes.Red;
+            });
         }
 
         private void textBlock2_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -635,21 +639,25 @@ namespace Employee_time_tracking_software
                 textBlock_b1.Text = GetMonthTime(elapsedTime);
                 textBlock_b2.Text = GetDayTime(elapsedTime);
 
-                if (temp == 0)
+                if (temp >= 0 && temp < 3)
                 {
-                    label_info.Content = "Employee time tracking is start"; temp++;
+                    AddLabelText("Employee time tracking is start"); temp++;
                 }
-                else if (temp == 1)
+                else if (temp >= 3 && temp < 6)
                 {
-                    label_info.Content = "Employee time tracking is start."; temp++;
+                    AddLabelText("Employee time tracking is start."); temp++;
                 }
-                else if (temp == 2)
+                else if (temp >= 6 && temp < 9)
                 {
-                    label_info.Content = "Employee time tracking is start.."; temp++;
+                    AddLabelText("Employee time tracking is start.."); temp++;
                 }
-                else if (temp == 3)
+                else if (temp >= 9 && temp < 12)
                 {
-                    label_info.Content = "Employee time tracking is start..."; temp = 0;
+                    AddLabelText("Employee time tracking is start..."); temp++;
+                }
+                else
+                {
+                    temp = 0;
                 }
 
                 stopWatch.Start();
@@ -661,14 +669,8 @@ namespace Employee_time_tracking_software
         {
             string result = i.ToString();
 
-            if (i.ToString().Length == 1)
-            {
-                result = "0" + i;
-            }
-            else if (i == 0)
-            {
-                result = "00";
-            }
+            if (i.ToString().Length == 1) result = "0" + i;
+            else if (i == 0)  result = "00"; 
 
             return result;
         }
@@ -716,8 +718,7 @@ namespace Employee_time_tracking_software
             command.ExecuteNonQuery();
             connection.Close();
 
-            label_info.Content = "Employee time tracking on pause";
-            label_info.Foreground = System.Windows.Media.Brushes.Black;
+            AddLabelText("Employee time tracking on pause"); 
             button_start.Visibility = Visibility.Visible;
             button_stop.Visibility = Visibility.Hidden;
         }
