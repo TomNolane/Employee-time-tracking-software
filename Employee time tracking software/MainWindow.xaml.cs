@@ -93,7 +93,7 @@ namespace Employee_time_tracking_software
                     [time_ticks] char(50) NOT NULL,
                     [time_ticks_day] char(50) NOT NULL
                     );", connection); //DEFAULT '0'
-                connection.Open(); 
+                connection.Open();
                 command.ExecuteNonQuery();
                 connection.Close();
 
@@ -162,7 +162,7 @@ namespace Employee_time_tracking_software
 
             ShowElements(ls1);
             richTextBox.Visibility = Visibility.Hidden; // delete
-            AddLabelText("Employee time tracking software is running!"); 
+            AddLabelText("Employee time tracking software is running!");
         }
 
         private void TakeScreenShot(bool b = false, string s = "")
@@ -205,7 +205,7 @@ namespace Employee_time_tracking_software
 
                     string filename = string.Empty;
 
-                    if(b) filename = "ScreenCapture-" + DateTime.Now.ToString("ddMMyyyy_HH_mm_ss") + "_" + s + ".png";
+                    if (b) filename = "ScreenCapture-" + DateTime.Now.ToString("ddMMyyyy_HH_mm_ss") + "_" + s + ".png";
                     else filename = "ScreenCapture-" + DateTime.Now.ToString("ddMMyyyy_HH_mm_ss") + ".png";
 
                     bmp.Save(Path.Combine(path, filename), ImageFormat.Jpeg);
@@ -441,7 +441,7 @@ namespace Employee_time_tracking_software
         {
             if (string.IsNullOrWhiteSpace(textBox_username.Text) || textBox_username.Text.ToLower().Contains("username") || string.IsNullOrWhiteSpace(textBox_password.Password))
             {
-                AddLabelErrorText(string.IsNullOrWhiteSpace(textBox_username.Text) || textBox_username.Text.ToLower().Contains("username") ? "Username must be not empty!" : string.IsNullOrWhiteSpace(textBox_password.Password) ? "Password must be not empty!" : ""); 
+                AddLabelErrorText(string.IsNullOrWhiteSpace(textBox_username.Text) || textBox_username.Text.ToLower().Contains("username") ? "Username must be not empty!" : string.IsNullOrWhiteSpace(textBox_password.Password) ? "Password must be not empty!" : "");
                 return;
             }
             else if (Test)
@@ -449,17 +449,17 @@ namespace Employee_time_tracking_software
                 HideElements(ls1);
                 ShowElements(ls2);
 
-                AddLabelText("You have successfully entered!"); 
+                AddLabelText("You have successfully entered!");
 
                 textBlock_b1.Text = GetMonthTime("0:0:0");
                 textBlock_b2.Text = GetDayTime("0:0:0");
-                TakeScreenShot(true,"start"); 
+                TakeScreenShot(true, "start");
                 return;
             }
 
             HideElements(ls1);
 
-            AddLabelText("Connecting ... please wait..."); 
+            AddLabelText("Connecting ... please wait...");
 
             string url = "https://example.com";
 
@@ -477,12 +477,12 @@ namespace Employee_time_tracking_software
             if (string.IsNullOrWhiteSpace(result))
             {
                 ShowElements(ls1);
-                AddLabelErrorText("Incorrect login or password!"); 
+                AddLabelErrorText("Incorrect login or password!");
             }
             else
             {
                 ShowElements(ls2);
-                AddLabelText("Connecting ... please wait..."); 
+                AddLabelText("Connecting ... please wait...");
             }
         }
 
@@ -584,14 +584,15 @@ namespace Employee_time_tracking_software
             });
 
             if (string.IsNullOrWhiteSpace(result)) AddLabelErrorText("First, enter your username or email");
-            else  AddLabelText("Mail has been send to you email for restore");
+            else AddLabelText("Mail has been send to you email for restore");
         }
 
         private void AddLabelText(string s)
         {
-            label_info.Dispatcher.Invoke(() => { 
+            label_info.Dispatcher.Invoke(() => {
                 label_info.Content = s;
                 label_info.Foreground = System.Windows.Media.Brushes.Black;
+                label_info.ToolTip = s;
             });
         }
 
@@ -600,6 +601,7 @@ namespace Employee_time_tracking_software
             label_info.Dispatcher.Invoke(() => {
                 label_info.Content = s;
                 label_info.Foreground = System.Windows.Media.Brushes.Red;
+                label_info.ToolTip = s;
             });
         }
 
@@ -674,7 +676,7 @@ namespace Employee_time_tracking_software
             string result = i.ToString();
 
             if (i.ToString().Length == 1) result = "0" + i;
-            else if (i == 0)  result = "00"; 
+            else if (i == 0) result = "00";
 
             return result;
         }
@@ -722,7 +724,7 @@ namespace Employee_time_tracking_software
             command.ExecuteNonQuery();
             connection.Close();
 
-            AddLabelText("Employee time tracking on pause"); 
+            AddLabelText("Employee time tracking on pause");
             button_start.Visibility = Visibility.Visible;
             button_stop.Visibility = Visibility.Hidden;
         }
@@ -741,8 +743,7 @@ namespace Employee_time_tracking_software
                 AddLabelText("Show employee time tracking software");
                 ShowElements(ls2);
                 richTextBox.Visibility = Visibility.Hidden;
-                richTextBox.Document.Blocks.Clear();
-            } 
+            }
         }
 
         private void label_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -758,36 +759,74 @@ namespace Employee_time_tracking_software
         }
 
         private void AddScreenshotsToRichTextBox()
-        {
-            //string path = Environment.CurrentDirectory + @"\ScreenShot_" + DateTime.Now.ToShortDateString();
-              
-                List<string> ls_shots = new List<string>();
-                var directories = Directory.GetDirectories(Environment.CurrentDirectory);
-                foreach(var directory in directories)
+        { 
+            richTextBox.Document.Blocks.Clear();
+            ObjParag = new Paragraph();
+            List<string> ls_shots = new List<string>();
+            var directories = Directory.GetDirectories(Environment.CurrentDirectory);
+            foreach (var directory in directories)
+            {
+                if (directory.Contains("ScreenShot_"))
                 {
-                    if(directory.Contains("ScreenShot_"))
+                    var files = Directory.GetFiles(directory);
+                    foreach (var file in files)
                     {
-                        var files = Directory.GetFiles(directory);
-                        foreach(var file in files)
-                        {
-                            ls_shots.Add(file);
-                        }
+                        ls_shots.Add(file);
                     }
                 }
+            }
 
-                foreach(var temp in ls_shots)
+            foreach (var temp in ls_shots)
+            {
+                var f = File.GetCreationTime(temp); bool isToDay = false;
+                if (DateTime.Now.Day == new DateTime(f.Ticks).Day)
+                    isToDay = true;
+                System.Windows.Controls.Button btn = new System.Windows.Controls.Button();
+                btn.Uid = temp;
+                if (!isToDay) btn.Content = "Delete " + f;
+                else btn.Content = "Delete today " + f;
+                var margin = btn.Margin;
+                margin.Left = (richTextBox.Width / 2) - 100;
+                btn.Margin = margin;  
+                btn.Click += btn_Click; 
+
+                var bitmap_img = new BitmapImage();
+
+                using (var stream = new FileStream(temp, FileMode.Open))
                 {
-                    BitmapImage bitmap_img = new BitmapImage(new Uri(temp, UriKind.Absolute)); 
-                    System.Windows.Controls.Image img = new System.Windows.Controls.Image();
-                    img.Source = bitmap_img; 
-                    ObjParag.Inlines.Add(img);
-                    ObjParag.Inlines.Add("\n\n");
+                    bitmap_img.BeginInit();
+                    bitmap_img.CacheOption = BitmapCacheOption.OnLoad;
+                    bitmap_img.StreamSource = stream;
+                    bitmap_img.EndInit();
+                    bitmap_img.Freeze(); 
                 }
-                ObjFdoc.Blocks.Add(ObjParag);
-                richTextBox.Dispatcher.Invoke(() =>
-                {
-                    richTextBox.Document = ObjFdoc;
-                }); 
+
+                System.Windows.Controls.Image img = new System.Windows.Controls.Image();
+                img.Source = bitmap_img;
+                ObjParag.Inlines.Add(img);
+                ObjParag.Inlines.Add("\n");
+                ObjParag.Inlines.Add(btn);
+                ObjParag.Inlines.Add("\n\n");
+            }
+            ObjFdoc.Blocks.Add(ObjParag);
+            richTextBox.Dispatcher.Invoke(() =>
+            {
+                richTextBox.Document = ObjFdoc;
+            });
+        }
+
+        private void btn_Click(object sender, RoutedEventArgs e)
+        { 
+            try
+            {
+                Dispatcher.Invoke(() => { File.Delete((sender as System.Windows.Controls.Button).Uid); });
+                AddScreenshotsToRichTextBox();
+            }
+           catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.StackTrace);
+                AddLabelErrorText(ex.Message);
+            }
         }
     }
 
