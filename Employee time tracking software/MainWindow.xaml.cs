@@ -759,7 +759,7 @@ namespace Employee_time_tracking_software
         }
 
         private void AddScreenshotsToRichTextBox()
-        { 
+        {
             richTextBox.Document.Blocks.Clear();
             ObjParag = new Paragraph();
             List<string> ls_shots = new List<string>();
@@ -774,6 +774,14 @@ namespace Employee_time_tracking_software
                         ls_shots.Add(file);
                     }
                 }
+            }
+
+            if (ls_shots.Count < 1)
+            {
+                AddLabelErrorText("You haven't got screenshots");
+                richTextBox.Visibility = Visibility.Visible;
+                label_MouseLeftButtonDown(null,null); 
+                return;
             }
 
             foreach (var temp in ls_shots)
