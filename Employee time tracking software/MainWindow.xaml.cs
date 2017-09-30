@@ -589,7 +589,8 @@ namespace Employee_time_tracking_software
 
         private void AddLabelText(string s)
         {
-            label_info.Dispatcher.Invoke(() => {
+            label_info.Dispatcher.Invoke(() =>
+            {
                 label_info.Content = s;
                 label_info.Foreground = System.Windows.Media.Brushes.Black;
                 label_info.ToolTip = s;
@@ -598,7 +599,8 @@ namespace Employee_time_tracking_software
 
         private void AddLabelErrorText(string s)
         {
-            label_info.Dispatcher.Invoke(() => {
+            label_info.Dispatcher.Invoke(() =>
+            {
                 label_info.Content = s;
                 label_info.Foreground = System.Windows.Media.Brushes.Red;
                 label_info.ToolTip = s;
@@ -729,35 +731,7 @@ namespace Employee_time_tracking_software
             button_stop.Visibility = Visibility.Hidden;
         }
 
-        private void label_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (richTextBox.Visibility != Visibility.Visible)
-            {
-                AddLabelText("Show list of your screenshots");
-                HideElements(ls2);
-                richTextBox.Visibility = Visibility.Visible;
-                AddScreenshotsToRichTextBox();
-            }
-            else
-            {
-                AddLabelText("Show employee time tracking software");
-                ShowElements(ls2);
-                richTextBox.Visibility = Visibility.Hidden;
-            }
-        }
-
-        private void label_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            label.Foreground = System.Windows.Media.Brushes.DarkBlue;
-            label.Background = System.Windows.Media.Brushes.Yellow;
-        }
-
-        private void label_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            label.Foreground = System.Windows.Media.Brushes.Black;
-            label.Background = System.Windows.Media.Brushes.Transparent;
-        }
-
+      
         private void AddScreenshotsToRichTextBox()
         {
             richTextBox.Document.Blocks.Clear();
@@ -780,7 +754,7 @@ namespace Employee_time_tracking_software
             {
                 AddLabelErrorText("You haven't got screenshots");
                 richTextBox.Visibility = Visibility.Visible;
-                label_MouseLeftButtonDown(null,null); 
+                label_Click(null, null);
                 return;
             }
 
@@ -795,8 +769,8 @@ namespace Employee_time_tracking_software
                 else btn.Content = "Delete today " + f;
                 var margin = btn.Margin;
                 margin.Left = (richTextBox.Width / 2) - 100;
-                btn.Margin = margin;  
-                btn.Click += btn_Click; 
+                btn.Margin = margin;
+                btn.Click += btn_Click;
 
                 var bitmap_img = new BitmapImage();
 
@@ -806,7 +780,7 @@ namespace Employee_time_tracking_software
                     bitmap_img.CacheOption = BitmapCacheOption.OnLoad;
                     bitmap_img.StreamSource = stream;
                     bitmap_img.EndInit();
-                    bitmap_img.Freeze(); 
+                    bitmap_img.Freeze();
                 }
 
                 System.Windows.Controls.Image img = new System.Windows.Controls.Image();
@@ -824,16 +798,35 @@ namespace Employee_time_tracking_software
         }
 
         private void btn_Click(object sender, RoutedEventArgs e)
-        { 
+        {
             try
             {
                 Dispatcher.Invoke(() => { File.Delete((sender as System.Windows.Controls.Button).Uid); });
                 AddScreenshotsToRichTextBox();
             }
-           catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.StackTrace);
                 AddLabelErrorText(ex.Message);
+            }
+        }
+
+        private void label_Click(object sender, RoutedEventArgs e)
+        {
+            if (richTextBox.Visibility != Visibility.Visible)
+            {
+                AddLabelText("Show list of your screenshots");
+                label.ToolTip = "Click to view main page";
+                HideElements(ls2);
+                richTextBox.Visibility = Visibility.Visible;
+                AddScreenshotsToRichTextBox();
+            }
+            else
+            {
+                AddLabelText("Show employee time tracking software");
+                label.ToolTip = "Click to view screenshots";
+                ShowElements(ls2);
+                richTextBox.Visibility = Visibility.Hidden;
             }
         }
     }
