@@ -229,6 +229,51 @@
                 <Button Margin="5" Content="Screenshots" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Times New Roman" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF767E89" />
             </Border>
         </ControlTemplate>
+        <ControlTemplate TargetType="Button" x:Key="btTemplate5">
+            <Border CornerRadius="25" BorderBrush="#FFB7B9BF" BorderThickness="0"
+                    Background="#FFCACCD3" Height="40" Width="100" >
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Button.MouseEnter">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ParallelTimeline Duration="0:0:2">
+
+                                    <ColorAnimation Duration="0:0:1" 
+                                Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                From="#FFCACCD3" To="Yellow" />
+                                    <ColorAnimation Duration="0:0:1" 
+                                Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
+                                From="#FF767E89" To="Black" />
+                                </ParallelTimeline>
+                            </Storyboard>
+                        </BeginStoryboard>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ParallelTimeline Duration="0:0:2">
+                                </ParallelTimeline>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <EventTrigger RoutedEvent="Button.MouseLeave">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ParallelTimeline Duration="0:0:2">
+
+                                    <ColorAnimation Duration="0:0:1" 
+                                Storyboard.TargetProperty="(Button.Background).(SolidColorBrush.Color)"
+                                From="Yellow" To="#FFCACCD3" />
+                                    <ColorAnimation Duration="0:0:1" 
+                                Storyboard.TargetProperty="(Button.Foreground).(SolidColorBrush.Color)"
+                                From="Black" To="#FF767E89" />
+
+                                </ParallelTimeline>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+                <Button Margin="5" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Times New Roman" FontSize="18" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="#FF767E89" />
+            </Border>
+        </ControlTemplate>
         <ControlTemplate TargetType="Label" x:Key="lblTemplate">
             <Label  HorizontalAlignment="Left" Margin="155,147,-157,0" VerticalAlignment="Top" FontFamily="Times New Roman" FontSize="72" Width="275" Foreground="#FF95989A" FontWeight="Bold"  Content="{TemplateBinding Content}"  >
                 <Label.Triggers>
@@ -279,6 +324,7 @@
         <TextBlock x:Name="textBlock"  HorizontalAlignment="Left" Margin="110,189,0,0" TextWrapping="Wrap" Text="Forgot password?" VerticalAlignment="Top" Width="163" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold" Foreground="#FF9598A1" MouseEnter="textBlock_MouseEnter" MouseLeave="textBlock_MouseLeave" Cursor="Hand" ToolTip="If you forgot your password, click this" Uid="1" MouseLeftButtonDown="textBlock_MouseLeftButtonDown" Visibility="Hidden"/>
         <TextBlock x:Name="textBlock2"  HorizontalAlignment="Left" Margin="110,217,0,0" TextWrapping="Wrap" Text="Registration" VerticalAlignment="Top" Width="109" FontFamily="Times New Roman" FontSize="20" FontWeight="Bold" Foreground="#FF9598A1" MouseEnter="textBlock_MouseEnter" MouseLeave="textBlock_MouseLeave" Cursor="Hand" ToolTip="Click for registration to system" Uid="1" MouseLeftButtonDown="textBlock2_MouseLeftButtonDown" Visibility="Hidden"/>
         <Button x:Name="myButton" Template="{StaticResource btTemplate}" Height="40" Width="100" Margin="374,192,116,223" Foreground="#FF767E89" Click="myButton_Click" Cursor="Hand" ToolTip="Click to enter" Uid="1" Visibility="Hidden"/>
+        <Button x:Name="myButton2" Template="{StaticResource btTemplate5}" Height="40" Width="100" Margin="374,192,116,223" Foreground="#FF767E89"  Cursor="Hand" ToolTip="Click to enter" Uid="9" Visibility="Hidden"/>
         <Label x:Name="label_info" Content="" HorizontalAlignment="Left" Margin="10,413,0,0" VerticalAlignment="Top" Width="428" Height="30" FontFamily="Times New Roman" FontSize="12" FontWeight="Bold"/>
         <Rectangle x:Name="rect" HorizontalAlignment="Left" Height="253" Margin="32,24,-289,0" Stroke="Black" VerticalAlignment="Top" Width="530" Fill="#FFC3C3C3" Uid="2" Visibility="Hidden"/>
         <Button x:Name="button_start" Template="{StaticResource btTemplate2}" Content="Start time" HorizontalAlignment="Left" Margin="201,278,-130,46"   Click="button_start_Click" FontFamily="Times New Roman"   Cursor="Hand" ToolTip="Click to start timer" FontWeight="Bold" Uid="2" Visibility="Hidden"/>
@@ -289,6 +335,6 @@
         <TextBlock x:Name="textBlock_b1" HorizontalAlignment="Left" TextWrapping="Wrap" Text="12:45:45" VerticalAlignment="Top" Height="28" Width="226" Background="White" FontFamily="Times New Roman" FontWeight="Bold" TextAlignment="Center" FontSize="24" Foreground="#FF95989A" Margin="47,87,0,0"  MouseEnter="textBlock_b2_MouseEnter" Uid="2" MouseLeave="textBlock_b2_MouseLeave" Visibility="Hidden" />
         <TextBlock x:Name="textBlock_b2" HorizontalAlignment="Left" Margin="314,87,-267,0" TextWrapping="Wrap" Text="1:56:40" VerticalAlignment="Top" Height="28" Width="226" Background="White" FontFamily="Times New Roman" FontWeight="Bold" TextAlignment="Center" FontSize="24" Foreground="#FF95989A" Uid="2" MouseEnter="textBlock_b2_MouseEnter" MouseLeave="textBlock_b2_MouseLeave" Visibility="Hidden"/>
         <RichTextBox x:Name="richTextBox" HorizontalAlignment="Left" Height="393" Margin="10,6,0,0" VerticalAlignment="Top" Width="570" ScrollViewer.VerticalScrollBarVisibility="Auto" BorderBrush="{x:Null}" IsDocumentEnabled="True"/>
-        <Button x:Name="label" Template="{StaticResource btTemplate4}" Foreground="#FF767E89" Cursor="Hand" ToolTip="Click to view screenshots" Uid="1" Click="label_Click" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0"/>
+        <Button x:Name="label" Template="{StaticResource btTemplate4}" Foreground="#FF767E89" Cursor="Hand" ToolTip="Click to view screenshots" Uid="1" Click="label_Click" BorderBrush="{x:Null}" Background="{x:Null}" BorderThickness="0" Visibility="Hidden"/>
     </Grid>
 </Window>

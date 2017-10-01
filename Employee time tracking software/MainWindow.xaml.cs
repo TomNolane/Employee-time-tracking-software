@@ -20,6 +20,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Threading;
 using System.Data.Common;
 using System.Windows.Media.Imaging;
+using System.Reflection;
 
 namespace Employee_time_tracking_software
 {
@@ -161,7 +162,8 @@ namespace Employee_time_tracking_software
             ls2.Add(textBlock_b2);
 
             ShowElements(ls1);
-            richTextBox.Visibility = Visibility.Hidden; // delete
+
+            richTextBox.Visibility = Visibility.Hidden; // delete 
             AddLabelText("Employee time tracking software is running!");
         }
 
@@ -448,7 +450,7 @@ namespace Employee_time_tracking_software
             {
                 HideElements(ls1);
                 ShowElements(ls2);
-
+                label.Visibility = Visibility.Visible;
                 AddLabelText("You have successfully entered!");
 
                 textBlock_b1.Text = GetMonthTime("0:0:0");
@@ -477,6 +479,7 @@ namespace Employee_time_tracking_software
             if (string.IsNullOrWhiteSpace(result))
             {
                 ShowElements(ls1);
+                label.Visibility = Visibility.Visible;
                 AddLabelErrorText("Incorrect login or password!");
             }
             else
@@ -763,13 +766,15 @@ namespace Employee_time_tracking_software
                 var f = File.GetCreationTime(temp); bool isToDay = false;
                 if (DateTime.Now.Day == new DateTime(f.Ticks).Day)
                     isToDay = true;
-                System.Windows.Controls.Button btn = new System.Windows.Controls.Button();
+                System.Windows.Controls.Button btn = Clone(button_start); //new System.Windows.Controls.Button();
+                System.Windows.Controls.Button btn2 = new System.Windows.Controls.Button(); ;
                 btn.Uid = temp;
                 if (!isToDay) btn.Content = "Delete " + f;
                 else btn.Content = "Delete today " + f;
-                var margin = btn.Margin;
+                var margin = btn2.Margin;
                 margin.Left = (richTextBox.Width / 2) - 100;
                 btn.Margin = margin;
+                btn.Visibility = Visibility.Visible;
                 btn.Click += btn_Click;
 
                 var bitmap_img = new BitmapImage();
@@ -828,6 +833,24 @@ namespace Employee_time_tracking_software
                 ShowElements(ls2);
                 richTextBox.Visibility = Visibility.Hidden;
             }
+        }
+
+        private static T Clone<T>(T controlToClone) where T : System.Windows.Controls.Control
+        {
+            T instance = Activator.CreateInstance<T>();
+
+            Type control = controlToClone.GetType();
+            PropertyInfo[] info = control.GetProperties();
+            object p = control.InvokeMember("", BindingFlags.CreateInstance, null, controlToClone, null);
+
+            foreach (PropertyInfo pi in info)
+            {
+                if ((pi.CanWrite) && !(pi.Name == "WindowTarget") && !(pi.Name == "Capture") && !(pi.Name == "Document") && !(pi.Name == "CaretPosition"))
+                {
+                    pi.SetValue(instance, pi.GetValue(controlToClone, null), null);
+                }
+            }
+            return instance;
         }
     }
 
