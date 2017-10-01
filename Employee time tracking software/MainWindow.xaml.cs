@@ -26,6 +26,7 @@ namespace Employee_time_tracking_software
 {
     public partial class MainWindow : Window
     {
+        System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
         //option for local testing without internet connection.
         private const bool Test = true;
 
@@ -52,6 +53,16 @@ namespace Employee_time_tracking_software
         public MainWindow()
         {
             InitializeComponent();
+
+            ni.Icon = new System.Drawing.Icon(Environment.CurrentDirectory + @"\Resources\icon2.ico");
+            ni.Visible = true;
+            ni.ShowBalloonTip(500, "Yeapp!","awesome",ToolTipIcon.Info);
+
+            System.Windows.Forms.ContextMenu niContextMenu = new System.Windows.Forms.ContextMenu();
+            niContextMenu.MenuItems.Add("Open", new EventHandler(Open));
+            niContextMenu.MenuItems.Add("Exit", new EventHandler(Exit));
+
+            ni.ContextMenu = niContextMenu;
 
             timer_shot.Interval = new TimeSpan(0, TimeIntervalScreenShot_Minuts, 0);
             timer_shot.Tick += (e, t) => { TakeScreenShot(); };
@@ -167,23 +178,32 @@ namespace Employee_time_tracking_software
             AddLabelText("Employee time tracking software is running!");
         }
 
-        private void TakeScreenShot(bool b = false, string s = "")
+        private void Exit(object sender, EventArgs e)
         {
-            //System.Drawing.Size sz = Screen.PrimaryScreen.Bounds.Size;
-            //IntPtr hDesk = GetDesktopWindow();
-            //IntPtr hSrce = GetWindowDC(hDesk);
-            //IntPtr hDest = CreateCompatibleDC(hSrce);
-            //IntPtr hBmp = CreateCompatibleBitmap(hSrce, sz.Width, sz.Height);
-            //IntPtr hOldBmp = SelectObject(hDest, hBmp);
-            //bool b = BitBlt(hDest, 0, 0, sz.Width, sz.Height, hSrce, 0, 0, CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
-            //Bitmap bmp = Bitmap.FromHbitmap(hBmp);
-            //SelectObject(hDest, hOldBmp);
-            //DeleteObject(hBmp);
-            //DeleteDC(hDest);
-            //ReleaseDC(hDesk, hSrce);
-            //bmp.Save(@"c:\temp\test.png");
-            //bmp.Dispose(); 
+            Environment.Exit(1);
+        }
 
+        private void Open(object sender, EventArgs e)
+        { 
+            WindowState = WindowState.Normal;
+            Show(); 
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+            e.Cancel = true;
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == WindowState.Minimized) this.Hide();
+
+            base.OnStateChanged(e);
+        }
+
+        private void TakeScreenShot(bool b = false, string s = "")
+        {  
             string path = Environment.CurrentDirectory + @"\ScreenShot_" + DateTime.Now.ToShortDateString();
 
             if (!Directory.Exists(path))
@@ -214,59 +234,8 @@ namespace Employee_time_tracking_software
                 }
             });
             thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-
-
-            //int y = 0;
-            //Thread thread = new Thread(() =>
-            //{
-            //    foreach(var screen in Screen.AllScreens)
-            //    {
-            //        Thread.Sleep(1000);
-
-            //        int screenLeft = screen.Bounds.Left;  
-            //        int screenTop = screen.Bounds.Top;
-            //        int screenWidth = screen.Bounds.Width;
-            //        int screenHeight = screen.Bounds.Height;
-
-            //        using (Bitmap bmp = new Bitmap(screenWidth, screenHeight))
-            //        {
-            //            using (Graphics g = Graphics.FromImage(bmp))
-            //            {
-            //                g.CopyFromScreen(screenLeft, screenTop, 0, 0, bmp.Size);
-            //            }
-
-            //            string filename = "ScreenCapture-" + DateTime.Now.ToString("ddMMyyyy-HHmmss_")+ y + ".png";
-            //            y++;
-            //            bmp.Save(Path.Combine(path, filename), ImageFormat.Jpeg);
-            //        }
-            //    }
-
-            //});
-            //thread.SetApartmentState(ApartmentState.STA);
-            //thread.Start(); 
-        }
-
-        // P/Invoke declarations
-        //[DllImport("gdi32.dll")]
-        //static extern bool BitBlt(IntPtr hdcDest, int xDest, int yDest, int
-        //wDest, int hDest, IntPtr hdcSource, int xSrc, int ySrc, CopyPixelOperation rop);
-        //[DllImport("user32.dll")]
-        //static extern bool ReleaseDC(IntPtr hWnd, IntPtr hDc);
-        //[DllImport("gdi32.dll")]
-        //static extern IntPtr DeleteDC(IntPtr hDc);
-        //[DllImport("gdi32.dll")]
-        //static extern IntPtr DeleteObject(IntPtr hDc);
-        //[DllImport("gdi32.dll")]
-        //static extern IntPtr CreateCompatibleBitmap(IntPtr hdc, int nWidth, int nHeight);
-        //[DllImport("gdi32.dll")]
-        //static extern IntPtr CreateCompatibleDC(IntPtr hdc);
-        //[DllImport("gdi32.dll")]
-        //static extern IntPtr SelectObject(IntPtr hdc, IntPtr bmp);
-        //[DllImport("user32.dll")]
-        //public static extern IntPtr GetDesktopWindow();
-        //[DllImport("user32.dll")]
-        //public static extern IntPtr GetWindowDC(IntPtr ptr);
+            thread.Start(); 
+        } 
 
         private void ShowElements(List<object> ls)
         {
@@ -766,14 +735,16 @@ namespace Employee_time_tracking_software
                 var f = File.GetCreationTime(temp); bool isToDay = false;
                 if (DateTime.Now.Day == new DateTime(f.Ticks).Day)
                     isToDay = true;
-                System.Windows.Controls.Button btn = Clone(button_start); //new System.Windows.Controls.Button();
+                System.Windows.Controls.Button btn = Clone(myButton2); //new System.Windows.Controls.Button();
                 System.Windows.Controls.Button btn2 = new System.Windows.Controls.Button(); ;
                 btn.Uid = temp;
-                if (!isToDay) btn.Content = "Delete " + f;
-                else btn.Content = "Delete today " + f;
+                if (!isToDay) { btn.Content = "Delete " + f; btn.ToolTip = "Delete " + f; }
+                else { btn.Content = "Delete today " + f; btn.ToolTip = "Delete today " + f; }
                 var margin = btn2.Margin;
-                margin.Left = (richTextBox.Width / 2) - 100;
+                margin.Left = (richTextBox.Width / 2) - 170;
+                margin.Top = 20;
                 btn.Margin = margin;
+                btn.Width = 300;
                 btn.Visibility = Visibility.Visible;
                 btn.Click += btn_Click;
 
@@ -852,6 +823,8 @@ namespace Employee_time_tracking_software
             }
             return instance;
         }
+
+       
     }
 
     public class PasswordBoxMonitor : DependencyObject
